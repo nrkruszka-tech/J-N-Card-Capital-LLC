@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>J&N Card Capital — Command Center</title>
+<style>
+:root{
+  --bg:#0b0f17; --panel:#131a26; --panel2:#1a2333; --border:#263349;
+  --text:#e8eef7; --dim:#8b98ac; --red:#ff4d5e; --gold:#ffc94d; --green:#3ddc84;
+  --blue:#5aa9ff; --purple:#b78cff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.55;}
+a{color:var(--blue);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* header */
+header{position:sticky;top:0;z-index:50;background:rgba(11,15,23,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.hwrap{max-width:1080px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.logo{font-weight:800;font-size:1.05rem;letter-spacing:.02em;white-space:nowrap;}
+.logo span{color:var(--red);}
+nav{display:flex;gap:4px;flex-wrap:wrap;}
+nav a{color:var(--dim);font-size:.85rem;font-weight:600;padding:6px 10px;border-radius:8px;}
+nav a:hover{color:var(--text);background:var(--panel2);text-decoration:none;}
+#hdrCountdown{margin-left:auto;font-size:.8rem;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap;}
+
+.wrap{max-width:1080px;margin:0 auto;padding:24px 20px 80px;}
+h1{font-size:1.7rem;margin:8px 0 2px;}
+h2{font-size:1.15rem;margin:38px 0 4px;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;scroll-margin-top:70px;}
+h3{font-size:1rem;margin:18px 0 8px;color:var(--text);}
+.sub{color:var(--dim);font-size:.92rem;margin-bottom:14px;}
+
+.grid{display:grid;gap:12px;}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 18px;}
+.card h3{margin-top:0;}
+.card .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);}
+.big{font-size:1.5rem;font-weight:800;font-variant-numeric:tabular-nums;}
+.accent{color:var(--red);}
+
+table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:12px;overflow:hidden;font-size:.88rem;}
+th{background:var(--panel2);text-align:left;padding:9px 10px;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--dim);}
+td{padding:9px 10px;border-top:1px solid var(--border);vertical-align:middle;}
+.btn{display:inline-block;background:var(--panel2);border:1px solid var(--border);color:var(--text);font-weight:600;padding:4px 10px;border-radius:7px;font-size:.78rem;white-space:nowrap;cursor:pointer;}
+.btn:hover{border-color:var(--blue);color:var(--blue);text-decoration:none;}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff;}
+.btn.primary:hover{filter:brightness(1.12);color:#fff;}
+.btn.ebay{border-color:#3a4f72;}
+.tag{font-size:.7rem;padding:1px 8px;border-radius:99px;border:1px solid var(--border);color:var(--dim);white-space:nowrap;}
+.tag.hot{color:var(--red);border-color:var(--red);}
+.tag.ok{color:var(--green);border-color:var(--green);}
+.price{color:var(--green);font-weight:700;white-space:nowrap;}
+.muted{color:var(--dim);}
+ul{margin:6px 0 6px 20px;}
+li{margin-bottom:6px;}
+pre{background:#080b11;border:1px solid var(--border);border-radius:10px;padding:14px;white-space:pre-wrap;font-size:.8rem;color:#c9d1d9;}
+input,select{background:#0d1320;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.9rem;width:100%;}
+input:focus,select:focus{outline:none;border-color:var(--blue);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.compin{width:76px;padding:4px 6px;font-size:.82rem;text-align:right;}
+.callout{border-left:3px solid var(--gold);background:var(--panel);border-radius:0 12px 12px 0;padding:12px 16px;margin:12px 0;font-size:.92rem;}
+.callout.red{border-left-color:var(--red);}
+.foot{color:var(--dim);font-size:.78rem;margin-top:48px;border-top:1px solid var(--border);padding-top:16px;}
+.result-line{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--border);font-size:.9rem;}
+.result-line:last-child{border-bottom:none;font-weight:800;}
+@media(max-width:640px){.frow{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <div class="logo">🎴 J<span>&amp;</span>N Card Capital</div>
+    <nav>
+      <a href="#dash">Dashboard</a>
+      <a href="#drops">Target Drops</a>
+      <a href="#ebay">eBay Deals</a>
+      <a href="#calc">Fee Calc</a>
+      <a href="#alerts">Alerts Hub</a>
+      <a href="#playbook">Playbook</a>
+      <a href="#hq">HQ</a>
+    </nav>
+    <div id="hdrCountdown">—</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ DASHBOARD ============ -->
+<h1 id="dash">Command Center</h1>
+<div class="sub">Nick &amp; Jackson · Pokémon resale · Missouri LLC · Everything in one place.</div>
+
+<div class="grid g3">
+  <div class="card">
+    <div class="lbl">Next Target drop window</div>
+    <div class="big accent" id="countdown">—</div>
+    <div class="muted" id="nextwin" style="font-size:.85rem;">—</div>
+    <div class="muted" style="font-size:.78rem;margin-top:6px;">Tue &amp; Fri · 2–5 AM CT · ~95% of online restocks (often right at 2:00)</div>
+  </div>
+  <div class="card">
+    <div class="lbl">Live status — check in order</div>
+    <div style="margin-top:8px;display:flex;flex-direction:column;gap:7px;">
+      <a class="btn" href="https://restockd.app/brands/pokemon" target="_blank">📡 Restockd — live detections</a>
+      <a class="btn" href="https://discord.com/channels/1369077918244012072/1468024029700034724" target="_blank">💬 #target-big-stock (the real drops)</a>
+      <a class="btn" href="https://www.trackalacker.com" target="_blank">📈 TrackaLacker — per-SKU history</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="lbl">The one rule</div>
+    <div style="font-size:.95rem;margin-top:8px;">Real eBay selling drag is <b class="accent">~17–18% + shipping</b> — a flip only counts if it clears that. Buy at ≤<b>65–68%</b> of expected sale for a 15% net (eBay), or 70–75% for fee-free exits (shows/local).</div>
+    <a class="btn" href="#calc" style="margin-top:10px;">Run the numbers ↓</a>
+  </div>
+</div>
+
+<div class="callout" id="dropnight">
+  🌙 <b>Drop-night quick fire:</b> be signed in to Target with payment saved · refresh product pages directly (not search) · add-to-cart can work right on the hour, checkout may complete later — don't clear the cart · dead page = possible relist under new SKU (grab it from the discord embed → <code>target.com/p/-/A-{SKU}</code>) · if tonight whiffs, next window is Friday.
+</div>
+
+<!-- ============ TARGET DROPS ============ -->
+<h2 id="drops">🎯 Target Drops — pre-staged links</h2>
+<div class="sub">8-digit TCINs = Target-direct. Always verify <b>“Sold and shipped by Target”</b> and MSRP-ish pricing — marketplace scalper listings copy official titles. Edit the comp boxes to refresh eBay links.</div>
+
+<h3>Prismatic Evolutions</h3>
+<table id="tbl-prismatic"></table>
+
+<h3>Mega Evolution — Chaos Rising / Pitch Black</h3>
+<table id="tbl-mega"></table>
+
+<h3>Ascended Heroes &amp; Other</h3>
+<table id="tbl-ascended"></table>
+
+<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+  <a class="btn" href="https://www.target.com/s?searchTerm=prismatic+evolutions" target="_blank">🔍 All Prismatic @ Target</a>
+  <a class="btn" href="https://www.target.com/s?searchTerm=pokemon+trading+cards" target="_blank">🔍 All Pokémon TCG @ Target</a>
+  <a class="btn" href="https://www.pokemoncenter.com/category/new-releases" target="_blank">🏬 Pokémon Center new releases</a>
+</div>
+
+<div class="callout">
+  💡 <b>Relist intel:</b> Target retires hot listings and relaunches under new TCINs with price hikes — SPC went 94300072 @ $99.99 → dead page → <b>1012055696 @ $129.99</b>. A dead link ≠ product gone. Comp your flips against the <i>new</i> retail, not the old one.
+</div>
+
+<!-- ============ EBAY DEALS ============ -->
+<h2 id="ebay">💸 eBay Deal Lanes</h2>
+<div class="sub">The bot isn't built yet (Phase 1 = sealed scanner) — these are hand-fire versions of what it will automate: newest-first searches with price caps set from the deal thresholds. Open a lane a few times a day; anything under the cap is worth a look.</div>
+
+<table>
+  <tr><th>Lane</th><th>Threshold</th><th>Hunt (newest first)</th><th>Verify before buying</th></tr>
+  <tr>
+    <td><b>Sealed — Prismatic</b><br><span class="muted" style="font-size:.78rem">SPC, ETBs, bundles</span></td>
+    <td><span class="tag ok">≥12–15% under</span></td>
+    <td>
+      <a class="btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=prismatic+evolutions+super+premium+collection+sealed&_sop=10&LH_BIN=1&LH_ItemCondition=1000&_udhi=150" target="_blank">SPC ≤$150</a>
+      <a class="btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=prismatic+evolutions+elite+trainer+box+sealed&_sop=10&LH_BIN=1&_udhi=85" target="_blank">ETB ≤$85</a>
+      <a class="btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=prismatic+evolutions+booster+bundle+sealed&_sop=10&LH_BIN=1&_udhi=45" target="_blank">Bundle ≤$45</a>
+    </td>
+    <td>
+      <a class="btn" href="https://www.ebay.com/sch/i.html?_nkw=prismatic+evolutions+super+premium+collection&LH_Sold=1&LH_Complete=1&_sop=13" target="_blank">Solds</a>
+      <a class="btn" href="https://130point.com/sales/" target="_blank">130point</a>
+    </td>
+  </tr>
+  <tr>
+    <td><b>Sealed — Mega Evolution</b><br><span class="muted" style="font-size:.78rem">Chaos Rising, Pitch Black</span></td>
+    <td><span class="tag ok">≥12–15% under</span></td>
+    <td>
+      <a class="btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=chaos+rising+elite+trainer+box+sealed&_sop=10&LH_BIN=1&_udhi=75" target="_blank">CR ETB ≤$75</a>
+      <a class="btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=pitch+black+elite+trainer+box+pokemon+sealed&_sop=10&LH_BIN=1&_udhi=75" target="_blank">PB ETB ≤$75</a>
+    </td>
+    <td><a class="btn" href="https://www.ebay.com/sch/i.html?_nkw=mega+evolution+elite+trainer+box&LH_Sold=1&LH_Complete=1&_sop=13" target="_blank">Solds</a></td>
+  </tr>
+  <tr>
+    <td><b>Graded slabs</b><br><span class="muted" style="font-size:.78rem">PSA/CGC/BGS · $20–200 sweet spot</span></td>
+    <td><span class="tag hot">≥20% under comp</span></td>
+    <td>
+      <a class="btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=psa+10+pokemon&_sop=10&LH_BIN=1&_udlo=20&_udhi=200" target="_blank">PSA 10 $20–200</a>
+      <a class="btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=cgc+10+pokemon&_sop=10&LH_BIN=1&_udlo=20&_udhi=200" target="_blank">CGC 10 $20–200</a>
+      <a class="btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=psa+9+pokemon+-lot&_sop=10&LH_BIN=1&_udlo=15&_udhi=150" target="_blank">PSA 9 $15–150</a>
+    </td>
+    <td>
+      <a class="btn" href="https://www.pricecharting.com/category/pokemon-cards" target="_blank">PriceCharting</a>
+      <a class="btn" href="https://130point.com/sales/" target="_blank">130point</a>
+    </td>
+  </tr>
+  <tr>
+    <td><b>Raw singles</b><br><span class="muted" style="font-size:.78rem">grading-arbitrage candidates</span></td>
+    <td><span class="tag hot">≥30% under comp</span></td>
+    <td>
+      <a class="btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=pokemon+alt+art+nm+-psa+-cgc+-bgs+-proxy+-custom&_sop=10&LH_BIN=1&_udlo=10&_udhi=100" target="_blank">Alt arts raw</a>
+      <a class="btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=pokemon+card+pack+fresh+-psa+-cgc+-proxy&_sop=10&LH_BIN=1&_udlo=10" target="_blank">"Pack fresh"</a>
+    </td>
+    <td><a class="btn" href="https://www.pokemonprice.com" target="_blank">Raw comps</a></td>
+  </tr>
+  <tr>
+    <td><b>Ending-soon auctions</b><br><span class="muted" style="font-size:.78rem">low-bid sniping</span></td>
+    <td><span class="tag">judgment</span></td>
+    <td>
+      <a class="btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=psa+pokemon&LH_Auction=1&_sop=1&_udlo=20" target="_blank">Slab auctions ending</a>
+      <a class="btn ebay" href="https://www.ebay.com/sch/i.html?_nkw=pokemon+sealed+box&LH_Auction=1&_sop=1&_udlo=30" target="_blank">Sealed auctions ending</a>
+    </td>
+    <td><span class="muted" style="font-size:.8rem">check seller feedback ≥98%</span></td>
+  </tr>
+</table>
+
+<div class="callout red">
+  ⚠️ <b>Human review always:</b> photos for centering/whitening, seller feedback, "read description" traps (creased/proxy/custom), best-offer solds hidden on eBay (130point shows them). Underpriced ≠ good.
+</div>
+
+<!-- ============ FEE CALC ============ -->
+<h2 id="calc">🧮 Flip Calculator — real fees (Model v2)</h2>
+<div class="sub">eBay: 13.25% FVF on item+tax (~14.3% effective, halves at $1k+), $0.40 order fee, promoted %, your shipping. Whatnot ~11%. TCGplayer ~12.75%. Shows/local = 0%.</div>
+
+<div class="grid g2">
+  <div class="card">
+    <div class="frow">
+      <div><div class="lbl">Expected sale $</div><input type="number" id="c_sale" value="100" min="0" step="1"></div>
+      <div><div class="lbl">Your buy cost $</div><input type="number" id="c_buy" value="65" min="0" step="1"></div>
+    </div>
+    <div class="frow">
+      <div><div class="lbl">Platform</div>
+        <select id="c_platform">
+          <option value="ebay" selected>eBay</option>
+          <option value="whatnot">Whatnot</option>
+          <option value="tcgplayer">TCGplayer</option>
+          <option value="show">Card show / local (0%)</option>
+        </select>
+      </div>
+      <div><div class="lbl">Outbound shipping $</div><input type="number" id="c_ship" value="4.50" min="0" step="0.25"></div>
+    </div>
+    <div class="frow">
+      <div><div class="lbl">Promoted listings %</div><input type="number" id="c_ads" value="2" min="0" max="15" step="0.5"></div>
+      <div><div class="lbl">Buyer sales-tax rate %</div><input type="number" id="c_tax" value="8" min="0" max="12" step="0.5"></div>
+    </div>
+  </div>
+  <div class="card" id="c_out"></div>
+</div>
+
+<!-- ============ ALERTS HUB ============ -->
+<h2 id="alerts">🔔 Alerts Hub</h2>
+<div class="sub">Layered: discord bots detect in seconds → X accounts confirm with links → trackers verify → Claude's Tue/Fri 1:45 AM watcher makes sure you're awake.</div>
+
+<div class="grid g2">
+  <div class="card">
+    <h3>💬 Discord — direct channel links</h3>
+    <div class="lbl" style="margin-top:6px;">Pokemon Restocks and Alerts</div>
+    <ul style="margin-top:4px;">
+      <li><a href="https://discord.com/channels/1369077918244012072/1468024029700034724" target="_blank">#target-big-stock</a> — the real overnight drops <span class="tag hot">priority</span></li>
+      <li><a href="https://discord.com/channels/1369077918244012072/1468024015603110090" target="_blank">#target-small-stock</a> — trickle stock (2–10 units)</li>
+      <li><a href="https://discord.com/channels/1369077918244012072/1468024047727153300" target="_blank">#target-scraper</a> — backend loads = pre-drop tell</li>
+      <li><a href="https://discord.com/channels/1369077918244012072/1369077918768168982" target="_blank">#role-assign</a> — ping roles (all claimed ✓)</li>
+    </ul>
+    <div class="lbl" style="margin-top:10px;">PokePings</div>
+    <ul style="margin-top:4px;">
+      <li><a href="https://discord.com/channels/1423812860043333695/1442317339222605936" target="_blank">#setup-keywords</a> — in-store pings land here (8 STL ZIPs set ✓)</li>
+      <li><a href="https://discord.com/channels/1423812860043333695/1436432694207709406" target="_blank">#instore-checker-target</a> — on-demand Target store stock</li>
+      <li><a href="https://discord.com/channels/1423812860043333695/1441935850840784958" target="_blank">#read-me</a> — keyword system docs</li>
+    </ul>
+    <div class="callout" style="margin-bottom:0;font-size:.85rem;">📥 <b>One-inbox trick:</b> Discord's Inbox (@ icon, top right) → <b>Mentions</b> tab = every role ping from every server in one feed. <br>📱 Phone pushes pause while desktop Discord is active; they resume ~10 min after you step away.</div>
+  </div>
+  <div class="card">
+    <h3>🐦 X trackers (turn the 🔔 on)</h3>
+    <ul style="margin-top:6px;">
+      <li><a href="https://x.com/PokemonRestocks" target="_blank">@PokemonRestocks</a> — links right at drop time</li>
+      <li><a href="https://x.com/switchstock" target="_blank">@switchstock</a> — Target window calls</li>
+      <li><a href="https://x.com/PokemonDealsTCG" target="_blank">@PokemonDealsTCG</a> — deal + restock mix</li>
+      <li><a href="https://x.com/PokeRestockHQ" target="_blank">@PokeRestockHQ</a> — backend stock counts</li>
+    </ul>
+    <h3 style="margin-top:16px;">📡 Trackers &amp; tools</h3>
+    <ul style="margin-top:6px;">
+      <li><a href="https://restockd.app/brands/pokemon" target="_blank">Restockd</a> — live detection + Tue/Fri schedule</li>
+      <li><a href="https://www.trackalacker.com" target="_blank">TrackaLacker</a> — per-SKU stock history</li>
+      <li><a href="https://130point.com/sales/" target="_blank">130point</a> — true sold prices (incl. best offers)</li>
+      <li><a href="https://www.pricecharting.com/category/pokemon-cards" target="_blank">PriceCharting</a> — slab comps by grade</li>
+      <li><a href="https://mypokescan.com/blog/prismatic-evolutions-restock" target="_blank">MyPokeScan</a> — restock trackers</li>
+    </ul>
+    <h3 style="margin-top:16px;">🤖 Claude watcher</h3>
+    <div style="font-size:.88rem;">Scheduled task fires <b>Tue + Fri 1:45 AM CT</b>: checks Restockd live, push-notifies your phone with the link list. In-store keyword pings: Best Buy · GameStop · Walgreens · Dollar General · Academy across ZIPs 63122/23/26/27/29/44, 63125, 63026.</div>
+  </div>
+</div>
+
+<!-- ============ PLAYBOOK ============ -->
+<h2 id="playbook">📖 Playbook</h2>
+<div class="grid g2">
+  <div class="card">
+    <h3>🌙 2 AM Target window</h3>
+    <ul>
+      <li>Signed in, payment + address saved <b>before</b> 2:00. ETBs go in &lt;90 seconds.</li>
+      <li>Refresh the product links above directly — search caches out-of-stock longer.</li>
+      <li>Add-to-cart on the hour even if the page looks dead; checkout can complete later. Don't clear a hung cart — retry.</li>
+      <li>Backend load ≠ same-night drop (June SPC slipped a night). Friday is the backup window.</li>
+      <li>Watch <a href="https://discord.com/channels/1369077918244012072/1468024047727153300" target="_blank">#target-scraper</a> the evening before: new SKUs loading = drop within 1–2 nights.</li>
+    </ul>
+    <h3>🏪 Pokémon Center queues</h3>
+    <ul>
+      <li>Weekdays ~10am–4pm ET (cluster 11–1); set-release nights drop overnight 12–5am ET.</li>
+      <li>Separate accounts = separate queue slots — you and Jackson each queue independently.</li>
+      <li>High queue number ≠ loss; drops run hours as carts abandon. Never auto-checkout (bans).</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>💰 Sell-side rules</h3>
+    <ul>
+      <li>BIN + Best Offer default. Price from 30–60d sold medians (130point for best-offer truth).</li>
+      <li>Offer rules: decline &lt;80% · accept ≥92% · counter between. List Sundays.</li>
+      <li>Route: eBay = slabs $100–1k and $1k+ (halved FVF) · Whatnot = sealed · TCGplayer = modern raw &lt;$50 · shows = fee-free exits.</li>
+      <li>Log every buy in the <a href="https://app.notion.com/p/b61bc54ca930463684b88110461bd23d" target="_blank">Flip Log</a> with a receipt photo — that's the LLC's COGS record.</li>
+    </ul>
+    <h3>🤖 Claude-in-Chrome drop watch</h3>
+    <div class="muted" style="font-size:.8rem;margin-bottom:6px;">Paste into the Claude side panel during a window:</div>
+    <pre>It's a Target drop window (Tue/Fri 2-5 AM CT). Open these
+Target pages in tabs and check each for shippable stock:
+- target.com/p/-/A-1012055696 (Prismatic SPC)
+- target.com/p/-/A-93954446 (Prismatic Booster Bundle)
+- target.com/p/-/A-94336414 (Prismatic Surprise Box)
+- target.com/p/-/A-95267143 (Chaos Rising ETB)
+Recheck every 2-3 min. The moment any shows "Add to cart"
+with shipping, alert me with the product + tab. Don't buy
+anything - just alert me. Keep watching until I say stop.</pre>
+  </div>
+</div>
+
+<!-- ============ HQ ============ -->
+<h2 id="hq">🏢 HQ — docs &amp; books</h2>
+<div class="grid g3">
+  <div class="card">
+    <h3>📓 Notion</h3>
+    <ul style="margin-top:6px;">
+      <li><a href="https://app.notion.com/p/3b7b7188788681bea0acd32cbf4daf94" target="_blank">JN Card Capital — home</a></li>
+      <li><a href="https://app.notion.com/p/b61bc54ca930463684b88110461bd23d" target="_blank">Inventory &amp; Flip Log</a> <span class="tag ok">source of truth</span></li>
+      <li><a href="https://app.notion.com/p/3b8b71887886812fa50cc74aa623a7d3" target="_blank">eBay Fee Model v2</a></li>
+      <li><a href="https://app.notion.com/p/3b8b7188788681af9fc3f7e9b9fdcc57" target="_blank">Target Restock Playbook</a></li>
+      <li><a href="https://app.notion.com/p/3b7b71887886816c9c5dee58cfb7d3f5" target="_blank">Master Plan</a></li>
+      <li><a href="https://app.notion.com/p/3b7b71887886819893b8f54c5bb3ecd0" target="_blank">Business Model v1</a></li>
+      <li><a href="https://app.notion.com/p/be162f60511a482b8ffc19b49bef4812" target="_blank">Grading Submissions</a></li>
+      <li><a href="https://app.notion.com/p/3b7b7188788681eab4bdfe2e89d4d4be" target="_blank">Card Shows — MO/KS</a></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>🏛️ LLC (Missouri)</h3>
+    <ul style="margin-top:6px;">
+      <li>eBay collects buyer sales tax automatically (marketplace facilitator) — nothing to file per-sale.</li>
+      <li>Profit passes through to you two — the Flip Log + receipts = COGS, so you're taxed on profit, not gross.</li>
+      <li>Reconcile eBay's 1099-K against the Flip Log at year-end.</li>
+      <li class="muted">Not tax advice — book one CPA hour before Q4.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>📊 Monthly KPIs</h3>
+    <ul style="margin-top:6px;">
+      <li>Net profit + ROI% per flip (Flip Log computes both)</li>
+      <li>Days held per flip — velocity beats margin at this size</li>
+      <li>ROI by lane / source / platform</li>
+      <li>Buy discipline: actual buy vs comp %</li>
+    </ul>
+    <div class="muted" style="font-size:.8rem;margin-top:6px;">A 15% flip in 3 weeks beats a 40% flip in 6 months.</div>
+  </div>
+</div>
+
+<div class="foot">
+  J&amp;N Card Capital command center · built Aug 10, 2026 with Claude · fee model: eBay trading-cards FVF 13.25% (6.625% at $1k+) on item+shipping+tax, $0.40/order, promoted extra · drop pattern: Restockd 90-day detection data · TCINs verified via Target + discord bot embeds. Edit comps inline — links regenerate live (nothing is saved between visits).
+</div>
+</div>
+
+<script>
+/* ---------- product data ---------- */
+const PRODUCTS = {
+  prismatic: [
+    {name:"Super Premium Collection", tcin:"1012055696", msrp:129.99, comp:170, note:"relisted Aug '26"},
+    {name:"Elite Trainer Box", tcin:"1011206804", msrp:49.99, comp:90, note:"verify seller"},
+    {name:"Booster Bundle", tcin:"93954446", msrp:26.99, comp:55},
+    {name:"Surprise Box", tcin:"94336414", msrp:24.99, comp:45},
+    {name:"Poster Collection", tcin:"93803457", msrp:19.99, comp:35},
+    {name:"Binder Collection", tcin:"94300066", msrp:34.99, comp:60},
+    {name:"Premium Figure Collection", tcin:"94864079", msrp:79.99, comp:110},
+    {name:"Tech Sticker — Sylveon", tcin:"94300058", msrp:14.99, comp:25},
+    {name:"Tech Sticker — Leafeon", tcin:"94300075", msrp:14.99, comp:24},
+    {name:"Tech Sticker — Glaceon", tcin:"94300080", msrp:14.99, comp:24},
+  ],
+  mega: [
+    {name:"Chaos Rising Elite Trainer Box", tcin:"95267143", msrp:59.99, comp:75},
+    {name:"Chaos Rising Booster Bundle", tcin:"95298172", msrp:31.99, comp:40},
+    {name:"Chaos Rising 3-Booster Blister", tcin:"95298174", msrp:14.99, comp:19},
+    {name:"Pitch Black Elite Trainer Box", tcin:"1011483406", msrp:59.99, comp:78, note:"verify seller"},
+  ],
+  ascended: [
+    {name:"Ascended Heroes Elite Trainer Box", tcin:"95082118", msrp:59.99, comp:70},
+    {name:"Ascended Heroes Booster Bundle", tcin:"95120834", msrp:31.99, comp:38},
+    {name:"AH 2-Pack Collection (Erika)", tcin:"95173527", msrp:0, comp:0},
+    {name:"AH 2-Pack Collection (Larry)", tcin:"95173525", msrp:0, comp:0},
+    {name:"AH Poster (Lucario)", tcin:"95093981", msrp:19.99, comp:0},
+    {name:"AH Poster (Gardevoir)", tcin:"95093982", msrp:19.99, comp:0},
+    {name:"AH Deluxe Pin Collection", tcin:"95093989", msrp:0, comp:0},
+    {name:"Mega Charizard Tins", tcin:"95138464", msrp:0, comp:0},
+    {name:"First Partner Illustration S3", tcin:"1011960739", msrp:17.99, comp:25, note:"verify seller"},
+  ]
+};
+
+function ebayHunt(name, cap){
+  const q = encodeURIComponent("pokemon " + name.replace(/[—–]/g," ").replace(/AH /,"Ascended Heroes ") + " sealed");
+  let u = "https://www.ebay.com/sch/i.html?_nkw=" + q + "&_sop=10&LH_BIN=1";
+  if(cap > 0) u += "&_udhi=" + Math.round(cap);
+  return u;
+}
+function ebaySolds(name){
+  const q = encodeURIComponent("pokemon " + name.replace(/[—–]/g," ").replace(/AH /,"Ascended Heroes "));
+  return "https://www.ebay.com/sch/i.html?_nkw=" + q + "&LH_Sold=1&LH_Complete=1&_sop=13";
+}
+
+function renderTable(key, elId){
+  const rows = PRODUCTS[key].map((p,i)=>{
+    const cap = p.comp > 0 ? Math.round(p.comp*0.85) : 0;
+    return `<tr>
+      <td><b>${p.name}</b>${p.note?` <span class="tag ${p.note==='verify seller'?'':'hot'}">${p.note}</span>`:""}</td>
+      <td class="price">${p.msrp?("$"+p.msrp.toFixed(2)):"—"}</td>
+      <td class="muted">${p.tcin}</td>
+      <td><input class="compin" type="number" value="${p.comp||''}" placeholder="comp" onchange="updComp('${key}',${i},this.value)"></td>
+      <td style="white-space:nowrap;">
+        <a class="btn primary" href="https://www.target.com/p/-/A-${p.tcin}" target="_blank">Target</a>
+        <a class="btn ebay" id="hunt-${key}-${i}" href="${ebayHunt(p.name,cap)}" target="_blank">eBay ≤${cap?("$"+cap):"…"}</a>
+        <a class="btn" href="${ebaySolds(p.name)}" target="_blank">Solds</a>
+      </td>
+    </tr>`;
+  }).join("");
+  document.getElementById(elId).innerHTML =
+    `<tr><th>Product</th><th>MSRP</th><th>TCIN</th><th>eBay comp $</th><th>Links</th></tr>` + rows;
+}
+function updComp(key,i,val){
+  PRODUCTS[key][i].comp = parseFloat(val)||0;
+  const p = PRODUCTS[key][i];
+  const cap = p.comp>0 ? Math.round(p.comp*0.85) : 0;
+  const a = document.getElementById(`hunt-${key}-${i}`);
+  a.href = ebayHunt(p.name, cap);
+  a.textContent = "eBay ≤" + (cap?("$"+cap):"…");
+}
+renderTable("prismatic","tbl-prismatic");
+renderTable("mega","tbl-mega");
+renderTable("ascended","tbl-ascended");
+
+/* ---------- fee calculator ---------- */
+function calc(){
+  const S = parseFloat(document.getElementById("c_sale").value)||0;
+  const B = parseFloat(document.getElementById("c_buy").value)||0;
+  const ship = parseFloat(document.getElementById("c_ship").value)||0;
+  const ads = (parseFloat(document.getElementById("c_ads").value)||0)/100;
+  const tax = (parseFloat(document.getElementById("c_tax").value)||0)/100;
+  const pf = document.getElementById("c_platform").value;
+  let fees = 0, detail = "";
+  if(pf==="ebay"){
+    const rate = S>=1000 ? 0.06625 : 0.1325;
+    const fvf = rate * (S * (1+tax));
+    const order = S<=10 ? 0.30 : 0.40;
+    const adFee = ads * S;
+    fees = fvf + order + adFee;
+    detail = `FVF ${(rate*100).toFixed(2)}% on $${(S*(1+tax)).toFixed(2)} (incl. tax) = $${fvf.toFixed(2)} · order $${order.toFixed(2)} · ads $${adFee.toFixed(2)}`;
+  } else if(pf==="whatnot"){
+    fees = S*0.08 + S*0.029 + 0.30;
+    detail = "8% commission + 2.9% + $0.30 processing";
+  } else if(pf==="tcgplayer"){
+    fees = S*0.1025 + S*0.025;
+    detail = "10.25% marketplace + 2.5% processing";
+  } else {
+    fees = 0; detail = "no platform fees — show/local cash";
+  }
+  const net = S - fees - ship;
+  const profit = net - B;
+  const roi = B>0 ? profit/B*100 : 0;
+  const be = (pf==="ebay") ? (B+ship+0.40)/ (S>=1000?0.835:0.835) : (pf==="whatnot") ? (B+ship+0.30)/0.89 : (pf==="tcgplayer") ? (B+ship)/0.8725 : B+ship;
+  const keep = S>0 ? (net/S*100) : 0;
+  document.getElementById("c_out").innerHTML = `
+    <div class="lbl">Result</div>
+    <div class="result-line"><span>Platform fees</span><span>−$${fees.toFixed(2)}</span></div>
+    <div class="result-line"><span>Shipping out</span><span>−$${ship.toFixed(2)}</span></div>
+    <div class="result-line"><span>Net proceeds (${keep.toFixed(1)}% of sale)</span><span>$${net.toFixed(2)}</span></div>
+    <div class="result-line"><span>Buy cost</span><span>−$${B.toFixed(2)}</span></div>
+    <div class="result-line"><span style="color:${profit>=0?'var(--green)':'var(--red)'}">Profit &nbsp;·&nbsp; ROI ${roi.toFixed(1)}%</span><span style="color:${profit>=0?'var(--green)':'var(--red)'}">$${profit.toFixed(2)}</span></div>
+    <div class="muted" style="font-size:.78rem;margin-top:8px;">${detail}</div>
+    <div class="muted" style="font-size:.82rem;margin-top:6px;">Break-even sale price: <b style="color:var(--gold)">$${be.toFixed(2)}</b></div>`;
+}
+["c_sale","c_buy","c_ship","c_ads","c_tax","c_platform"].forEach(id=>{
+  document.getElementById(id).addEventListener("input",calc);
+  document.getElementById(id).addEventListener("change",calc);
+});
+calc();
+
+/* ---------- drop-window countdown (America/Chicago) ---------- */
+function chicagoNow(){
+  return new Date(new Date().toLocaleString("en-US",{timeZone:"America/Chicago"}));
+}
+function nextWindow(){
+  const now = chicagoNow();
+  for(let d=0; d<8; d++){
+    const cand = new Date(now.getFullYear(), now.getMonth(), now.getDate()+d, 2, 0, 0);
+    const dow = cand.getDay();
+    if((dow===2||dow===5) && cand > now) return cand;
+  }
+  return null;
+}
+function inWindow(){
+  const now = chicagoNow();
+  const dow = now.getDay(), h = now.getHours();
+  return (dow===2||dow===5) && h>=2 && h<5;
+}
+function tick(){
+  const cd = document.getElementById("countdown");
+  const hc = document.getElementById("hdrCountdown");
+  const nw = document.getElementById("nextwin");
+  if(inWindow()){
+    cd.textContent = "🔴 WINDOW OPEN";
+    hc.textContent = "🔴 DROP WINDOW OPEN";
+    nw.textContent = "Refresh the product links. Watch #target-big-stock.";
+    return;
+  }
+  const w = nextWindow();
+  if(!w) return;
+  const ms = w - chicagoNow();
+  const h = Math.floor(ms/3600000), m = Math.floor(ms%3600000/60000), s = Math.floor(ms%60000/1000);
+  const t = h+"h "+String(m).padStart(2,"0")+"m "+String(s).padStart(2,"0")+"s";
+  cd.textContent = t;
+  hc.textContent = "🎯 " + t;
+  nw.textContent = w.toLocaleDateString(undefined,{weekday:"long",month:"short",day:"numeric"}) + " · 2:00 AM CT";
+}
+tick(); setInterval(tick,1000);
+</script>
+</body>
+</html>
